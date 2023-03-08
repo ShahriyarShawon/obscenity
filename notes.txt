@@ -1,0 +1,29 @@
+tape[1] seems to hold an array of  numbers where the first number 
+is the address where it will store in memory the second number in 
+that list
+
+edata is the second item in the first list
+only used in alloc call
+
+call is being used on the first item of the first list\
+coincidence that that number is the number associated with the init function?
+
+the number that was used to call passes all the switch cases and gets to the default
+at this stage it is going to the n+2 item which means it skips the first 2 lists
+and indexes the nth function array
+it takes the third item in that array which is a number which doesnt mean much to me at this stage
+it takes that number and pushes that many zeros 
+
+it then sets the memory location sp = fp
+then fp is set to sp 
+then sp is decremented
+then leval is called on the 4th item for the indexed list which happens
+to be a list of numbers which i assume is the function body
+
+pc is set to 0
+pc is set to eval which takes a list of instructions and pc as argument
+ir (instruction?) is set to the pc
+pc is incremented
+
+
+

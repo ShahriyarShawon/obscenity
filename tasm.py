@@ -9,6 +9,7 @@ class TokenType(str,Enum):
     INSTRUCTION = "instruction"
     NUMBER = "number"
     FUNCTION_CALL = "function_call"
+    NULL = "null"
 
 class Token:
     def __init__(self, value, type, position):
@@ -41,6 +42,13 @@ class Tokenizer:
         self.advance()
         return Token(value, token_type, starting_pos)
 
+    def get_number(self):
+        num_str = ""
+        while self.curr_char.isnumeric():
+            num_str += self.curr_char
+            self.advance()
+        return num_str
+
     def get_word(self):
         word = ""
         while self.curr_char.isalpha():
@@ -63,12 +71,56 @@ class Tokenizer:
                 function_name = self.get_word()
                 token = Token(function_name, TokenType.FUNCTION_NAME, function_name_pos)
                 self.tokens.append(token)
+            elif self.curr_char.isalpha():
+                instruction_name = self.get_word()
+                instruction_pos = self.position
+                token = Token(instruction_name, TokenType.INSTRUCTION, instruction_pos)
+                self.tokens.append(token)
+            elif self.curr_char == "#":
+                function_name = "$"
+                self.advance()
+                function_name += self.get_word()
+                pos = self.position
+                token = Token(function_name, TokenType.FUNCTION_NAME, pos)
+            elif self.curr_char.isnumeric():
+                number = self.get_number()
+                token = Token(number, TokenType.NUMBER, 0)
+                self.tokens.append(token)
             else:
                 self.advance()
-        print(self.tokens)
+        return self.tokens
 
+class InstructionNode:
+    def __init__(self):
+        self.instruction = None 
+        self.args = None 
+    
+class FunctionNode:
+    def __init__(self):
+        self.instruction = [] 
+
+class Parser:
+    def __init__(self):
+        self.position = 0
+        self.curr_token: Token = None 
+        self.tokens = []
+        self.nodes = []
+
+    def advance(self):
+        self.position += 1
+        self.curr_token = self.tokens[self.position]
+
+
+    def parse(self, tokens: list[Token]):
+        self.tokens = tokens
+        while self.curr_token.type != TokenType.NULL:
+            if self.curr_token.type == TokenType.FUNCTION_START:
+                node = self.get_function_node()
+                
 
 
 if __name__ == "__main__":
     t = Tokenizer()
     tokens = t.tokenize(sys.argv[1])
+    for token in tokens:
+        print(token)

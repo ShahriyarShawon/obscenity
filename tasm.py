@@ -10,6 +10,7 @@ class TokenType(str,Enum):
     NUMBER = "number"
     FUNCTION_CALL = "function_call"
     NULL = "null"
+    SEMICOLON = "semicolon"
 
 class Token:
     def __init__(self, value, type, position):
@@ -86,6 +87,10 @@ class Tokenizer:
                 number = self.get_number()
                 token = Token(number, TokenType.NUMBER, 0)
                 self.tokens.append(token)
+            elif self.curr_char == ";":
+                token = Token("", TokenType.SEMICOLON, 0)
+                self.tokens.append(token)
+                self.advance()
             else:
                 self.advance()
         return self.tokens
@@ -109,6 +114,19 @@ class Parser:
     def advance(self):
         self.position += 1
         self.curr_token = self.tokens[self.position]
+    
+    def get_instruction_node(self):
+        while self.curr_token.type != TokenType.SEMICOLON:
+            pass
+
+    def get_function_node(self):
+        self.advance()
+        function_name = self.curr_token.value
+        self.advance() 
+        instructions = []
+        while self.curr_token.type == TokenType.FUNCTION_END:
+            self.get_instruction_node()
+            
 
 
     def parse(self, tokens: list[Token]):

@@ -1,6 +1,7 @@
 import sys
 
-from obscenity.compiler import Parser, Tokenizer
+from obscenity.compiler import Parser, Tokenizer, Compiler
+
 
 
 def main():
@@ -10,8 +11,11 @@ def main():
     #    print(token)
     p = Parser()
     nodes = p.parse(tokens)
-    for node in nodes:
-        print(node.get_asm())
+    #for node in nodes:
+    #    print(node.get_asm())
+    c = Compiler()
+    c.compile(nodes)
+
 
 
 if __name__ == "__main__":

@@ -131,8 +131,21 @@ class Compiler:
     def __init__(self):
         self.nodes = [] 
         self.init_function_index = 0
+    
+    def generate_function_array(self, index: int, function: FunctionNode):
+        return
 
     def compile(self, nodes: list[Node]):
         self.nodes = nodes
         
-        num_of_functions = len()
+        function_nodes: list[FunctionNode] = [node for node in self.nodes if isinstance(node, FunctionNode)]
+        num_of_functions = len(function_nodes)
+        edata_offset = 2
+        function_counter = 0
+        function_array = 0
+
+        for idx, function in enumerate(function_nodes):
+            self.generate_function_array(idx, function)
+
+
+        

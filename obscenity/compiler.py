@@ -1,81 +1,4 @@
-import sys
-from enum import Enum
-from itertools import chain
-
-function_name_to_opcode = {
-    "push": 1,
-    "fetch": 2,
-    "store": 3,
-    "if": 4,
-    "loop": 5,
-    "break": 6,
-    "return": 7,
-    "call": 8,
-    "fpplus": 9,
-    "add": 10,
-    "sub": 11,
-    "mul": 12,
-    "div": 13,
-    "mod": 14,
-    "not": 15,
-    "and": 16,
-    "or": 17,
-    "xor": 18,
-    "eq": 19,
-    "neq": 20,
-    "lt": 21,
-    "leq": 22,
-    "gt": 23,
-    "geq": 24,
-    "pop": 25,
-    "lshift": 26,
-    "rshift": 27,
-}
-
-built_in_function_to_opcode = {
-    "iprint": -101,
-    "sprint": -102,
-    "iread": -103,
-    "sread": -104,
-    "nl": -105,
-    "random": -106,
-    "timer": -107,
-    "stoptimer": -108,
-    "makeimg": -201,
-    "setimg": -202,
-    "button": -203,
-    "html": -204,
-    "makelabel": -205,
-    "setlabel": -206,
-    "alloc": -109,
-    "free": -110,
-    "i2s": -111,
-    "maketable": -207,
-    "setcell": -208,
-    "setcellcolor": -209,
-    "buttonlabel": -210,
-}
-
-
-class TokenType(str, Enum):
-    FUNCTION_NAME = "function_name"
-    FUNCTION_START = "function_start"
-    FUNCTION_END = "function_end"
-    INSTRUCTION = "instruction"
-    NUMBER = "number"
-    FUNCTION_CALL = "function_call"
-    NULL = "null"
-    SEMICOLON = "semicolon"
-
-
-class Token:
-    def __init__(self, value, type, position):
-        self.value = value
-        self.type = type
-        self.pos = position
-
-    def __repr__(self):
-        return f"[{self.type}:{self.value}:{self.pos}]"
+from obscenity.units import FunctionNode, InstructionNode, Token, TokenType
 
 
 class Tokenizer:
@@ -157,39 +80,6 @@ class Tokenizer:
         return self.tokens
 
 
-class InstructionNode:
-    def __init__(self):
-        self.instruction: Token = None
-        self.args: list[Token] = []
-
-    def get_asm(self):
-        values = [function_name_to_opcode[self.instruction.value]]
-        values.extend(
-            [
-                int(v.value)
-                if v.value.isnumeric()
-                else built_in_function_to_opcode[v.value.replace("$", "").lower()]
-                for v in self.args
-            ]
-        )
-        return values
-
-    def __repr__(self):
-        return f"INS: {self.instruction.value} ARGS: {','.join([v.value for v in self.args])}"
-
-
-class FunctionNode:
-    def __init__(self):
-        self.function_name: Token = None
-        self.instructions = []
-
-    def get_asm(self):
-        return list(chain(*[ins.get_asm() for ins in self.instructions]))
-
-    def __repr__(self) -> str:
-        return f"Function: {self.function_name}\n{[ins for ins in self.instructions]}"
-
-
 class Parser:
     def __init__(self):
         self.position = 0
@@ -235,14 +125,3 @@ class Parser:
                 nodes.append(fn)
             self.advance()
         return nodes
-
-
-if __name__ == "__main__":
-    t = Tokenizer()
-    tokens = t.tokenize(sys.argv[1])
-    # for token in tokens:
-    #    print(token)
-    p = Parser()
-    nodes = p.parse(tokens)
-    for node in nodes:
-        print(node.get_asm())

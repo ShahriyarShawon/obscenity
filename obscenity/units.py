@@ -1,8 +1,11 @@
 from enum import Enum
+from abc import ABC
 from itertools import chain
 
 from obscenity.dicts import *
 
+class Node(ABC):
+    pass
 
 class TokenType(str, Enum):
     FUNCTION_NAME = "function_name"
@@ -25,7 +28,7 @@ class Token:
         return f"[{self.type}:{self.value}:{self.pos}]"
 
 
-class InstructionNode:
+class InstructionNode(Node):
     def __init__(self):
         self.instruction: Token = None
         self.args: list[Token] = []
@@ -46,7 +49,7 @@ class InstructionNode:
         return f"INS: {self.instruction.value} ARGS: {','.join([v.value for v in self.args])}"
 
 
-class FunctionNode:
+class FunctionNode(Node):
     def __init__(self):
         self.function_name: Token = None
         self.instructions = []

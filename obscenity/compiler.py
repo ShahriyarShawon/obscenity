@@ -1,4 +1,4 @@
-from obscenity.units import FunctionNode, InstructionNode, Token, TokenType
+from obscenity.units import FunctionNode, InstructionNode, Token, TokenType, Node
 
 
 class Tokenizer:
@@ -125,3 +125,14 @@ class Parser:
                 nodes.append(fn)
             self.advance()
         return nodes
+
+
+class Compiler:
+    def __init__(self):
+        self.nodes = [] 
+        self.init_function_index = 0
+
+    def compile(self, nodes: list[Node]):
+        self.nodes = nodes
+        
+        num_of_functions = len()
